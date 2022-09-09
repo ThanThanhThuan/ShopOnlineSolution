@@ -1,0 +1,26 @@
+﻿@using Blazored.Toast.Configuration
+@inherits LayoutComponentBase
+
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+    <main>
+   @*  <BlazoredToasts Position="ToastPosition.TopRight"
+                Timeout="10"
+                SuccessClass="success-toast-override"
+              />*@
+        <div class="top-row px-4">
+            <CartMenu/>
+        </div>
+
+        <article class="content px-4">
+                <BlazoredToasts Position="ToastPosition.TopRight"
+                Timeout="10"
+                SuccessClass="success-toast-override"
+              />
+            @Body
+        </article>
+    </main>
+</div>
+  

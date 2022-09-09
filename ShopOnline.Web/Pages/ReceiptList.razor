@@ -1,0 +1,43 @@
+﻿@layout OtherLayout
+@page "/ReceiptList"
+@inherits ReceiptListBase
+
+<PageTitle>Product Receipt List</PageTitle>
+
+<h3>Product Receipt List</h3>
+
+<div class="row g-3">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Date</th>
+                    <th>Supplier</th>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Amount</th>
+                    <th>Edit</th>
+         
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in PRDetailList)
+                {
+                    <tr>
+                        <td>@item.ProductReceiptId</td>
+                        <td>@item.VoucherDate.Value.ToShortDateString()</td>
+                        <td>@item.SupplierName</td>
+                        <td>@item.ProductName</td>
+                        <td>@item.Qty.ToString("N0")</td>
+                        <td>@item.Price.ToString("N2")</td>
+                        <td class="right">@item.TotalAmount.ToString("N2")</td>
+                        <td><button type="button" class="btn btn-warning sm" @onclick="@(() => Edit(item.ProductReceiptId))"><i class="fa fa-pen-to-square"></i></button></td>
+                  
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+

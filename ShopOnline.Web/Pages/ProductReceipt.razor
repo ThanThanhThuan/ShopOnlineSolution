@@ -1,0 +1,117 @@
+﻿@layout OtherLayout
+@page "/ProductReceipt/{VoucherId:int}"
+@inherits ProductReceiptBase
+
+<PageTitle>Product Receipt</PageTitle>
+
+<h3> @(VoucherId==-1?"Add ":"Edit ") Product Receipt</h3>
+@*<h5>@ErrorMessage class="col-7 p-0" </h5>*@
+
+<EditForm Model="@ProductReceiptDto" Context="EF" OnValidSubmit="@AddToPRs" class="row g-3">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+   @*  <div class="form-group">
+    <label for="supplierid">Supplier ID</label>
+    <InputNumber id="supplierid" @bind-Value="ProductReceiptDto.SupplierId" class="form-control" placeholder="..." row="5" />
+    </div>*@
+    <div hidden="@(VoucherId==-1)" class="col-md-1" >
+        <label for="id" class="form-label">ID</label>
+        <InputNumber id="id" @bind-Value="ProductReceiptDto.Id" disabled class="form-control" placeholder="..." />
+    </div>
+     <div class="col-md-2">
+        <label for="voucherdate" class="form-label">Voucher Date</label>
+        <InputDate id="voucherdate" @bind-Value="ProductReceiptDto.VoucherDate" class="form-control" placeholder="..." />
+    </div>
+   
+       <div class="col-md-4">
+            <label for="supplier" class="form-label">Supplier</label>
+            <InputSelect id="supplier" @bind-Value="@ProductReceiptDto.SupplierName" class="form-select">
+                @foreach (var sp in SupplierList)
+                {
+                    <option value="@sp.SupplierName">@sp.SupplierName</option>
+                }
+            </InputSelect>
+        </div>
+      
+      
+    <EditForm Model="@RowToAdd" Context="EF2" class="row g-3">
+        <div class="col-md-4">
+            <label for="product" class="form-label">Product</label>
+            <InputSelect id="product" @bind-Value="@RowToAdd.ProductName" class="form-select">
+                @foreach (var pr in ProductList)
+                {
+                    <option value="@pr.Name">@pr.Name</option>
+                }
+            </InputSelect>
+        </div>
+        <div class="col-md-2">
+            <label for="qty" class="form-label">Quantity</label>
+            <InputNumber id="qty" @oninput="CalcAmountQ"
+                         @bind-Value="@RowToAdd.Qty" class="form-control" />
+            @*<InputNumber id="qty" Value="@RowToAdd.Qty" ValueChanged="QtyChanged" ValueExpression="() => RowToAdd.Qty"  class="form-control" ></InputNumber>*@
+        </div>
+        <div class="col-md-3">
+            <label for="price" class="form-label">Price</label>
+            <InputNumber id="price" @oninput="CalcAmountP"
+                         @bind-Value="@RowToAdd.Price" class="form-control" />
+        </div>
+        <div class="col-md-3">
+            <label for="amount" class="form-label">Amount</label>
+            @*<input type="number"  id="amount" value="@(RowToAdd.TotalAmount.ToString("N2"))" @onchange="@(e => RowToAdd.TotalAmount = decimal.Parse(e.Value.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture))" />*@
+            <InputNumber id="amount" @bind-Value="@RowToAdd.TotalAmount" class="form-control" />
+        </div>
+        <div class="col-12">
+            @*<button type="submit" class="btn btn-primary">Add Row</button>*@
+            <button hidden="@(!IsRowAdd)" type="button" @onclick="@AddRow" class="btn btn-info"><i class="fa fa-plus"></i>&nbsp;Add Row</button>
+            <button hidden="@IsRowAdd" type="button" @onclick="@DoneEdit" class="btn btn-warning"><i class="fa fa-check"></i>&nbsp;Done Edit</button>
+        </div>
+    </EditForm>
+
+    <div class="row g-3">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Amount</th>
+                    <th>Edit</th>
+                    <th>Remove</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in PRDetailList)
+                {
+                    <tr>
+                        <td>@item.ProductName</td>
+                        <td>@item.Qty.ToString("N0")</td>
+                        <td>@item.Price.ToString("N2")</td>
+                        <td class="right">@item.TotalAmount.ToString("N2")</td>
+                        <td><button type="button" class="btn btn-warning sm" @onclick="@(() => Edit(item))"><i class="fa fa-pen-to-square"></i></button></td>
+                        <td><button type="button" class="btn btn-danger sm" @onclick="@(() => Remove(item))"><i class="fa fa-trash"></i></button></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="form-group">
+        <h5>Total Amount: @VoucherAmount.ToString("N2")</h5>
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary"><i class="fa fa-floppy-disk"></i>&nbsp;@(VoucherId==-1?"Save":"Update") </button>
+        &nbsp;  &nbsp;
+        <button type="button" hidden="@(VoucherId==-1)" class="btn btn-danger"><i class="fa fa-remove"></i>&nbsp;Delete Receipt </button>
+    </div>
+    <hr />
+    @*<label>Created on: @Recipe.DateCreated</label> <br />*@
+
+</EditForm>
+
+
+@*<p role="status">Current count: @currentCount</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>*@
+
+
